@@ -1,0 +1,108 @@
+version: '3.1'
+
+services:
+  
+  db:
+    image: postgres:15
+    container_name: mistery-dish-db
+    ports:
+      - "5432:5432"
+    env_file: enviroments/.env
+    volumes:
+      - mistery-dish-db:/var/lib/postgresql/data/
+      - ./initialDB/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - mistery-dish-network
+
+  redis:
+    image: redis:6
+    container_name: mistery-dish-redis
+    ports:
+      - "6379:6379"
+    env_file: enviroments/.env
+    volumes:
+      - redis-data:/data
+    networks:
+      - mistery-dish-network
+    
+  rabbitmq: 
+    image: rabbitmq:3-management-alpine 
+    container_name: rabbitmq 
+    ports: 
+      - 5672:5672 
+      - 15672:15672 
+    volumes: 
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/ 
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq 
+    networks: 
+      - mistery-dish-network
+
+  storage:
+    build: 
+      context: .
+      dockerfile: donate_dish/apps/storage/Dockerfile
+    container_name: storage
+    depends_on:
+      - db
+      - redis
+      - rabbitmq
+    env_file: 'enviroments/.env'
+    networks:
+      - mistery-dish-network
+
+  dish:
+    build: 
+      context: .
+      dockerfile: donate_dish/apps/dish/Dockerfile
+    container_name: dish
+    depends_on:
+      - db
+      - redis
+      - rabbitmq
+      - storage
+    env_file: 'enviroments/.env'
+    networks:
+      - mistery-dish-network
+
+  order:
+    build: 
+      context: .
+      dockerfile: donate_dish/apps/order/Dockerfile
+    container_name: order
+    depends_on:
+      - db
+      - redis
+      - rabbitmq
+      - storage
+      - dish
+    env_file: 'enviroments/.env'
+    networks:
+      - mistery-dish-network
+
+  apigateway:
+    ports:
+      - "3000:3000"
+      - "80:3000"
+      - "443:3000"
+    build: 
+      context: .
+      dockerfile: donate_dish/apps/apigateway/Dockerfile
+    container_name: apigateway
+    depends_on:
+      - db
+      - redis
+      - rabbitmq
+      - storage
+      - dish
+      - order
+    env_file: 'enviroments/.env'
+    networks:
+      - mistery-dish-network
+  
+volumes:
+  mistery-dish-db:
+  redis-data:
+
+networks:
+  mistery-dish-network:
+    driver: bridge
