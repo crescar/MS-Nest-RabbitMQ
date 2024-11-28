@@ -4,12 +4,14 @@ import { StorageService } from './storage.service';
 import { CommonModule } from '@app/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StorageEntity } from '@app/common/entities/storage.entity';
+import { ShoppingLogEntity } from '@app/common/entities/shoppingLog.entity';
 
 @Module({
   imports: [
     CommonModule,
     TypeOrmModule.forFeature([
-      StorageEntity
+      StorageEntity,
+      ShoppingLogEntity
     ])
   ],
   controllers: [StorageController],

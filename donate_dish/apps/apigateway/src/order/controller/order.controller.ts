@@ -19,6 +19,7 @@ export class OrderController {
   @ApiParam({ name: 'page', required: false })
   @ApiParam({ name: 'limit', required: false })
   @ApiParam({ name: 'status', required: false })
+  @ApiParam({ name: 'search', required: false })
   @ApiResponse({
     status: 200,
     type: StandartResponse<any>
@@ -26,10 +27,13 @@ export class OrderController {
   async listAllOrders(
     @Query('page') page: number,
     @Query('limit') limit: number,
-    @Query('status') status: number
+    @Query('status') status: number,
+    @Query('search') search: number
   ): Promise<StandartResponse<any>> 
   {
-    return await firstValueFrom(this.orderService.send('list_orders', {page, limit, status}));
+    const response = await firstValueFrom(this.orderService.send('list_orders', {page, limit, status, search}));
+    if(response.error) throw new HttpException(response.error, 400);
+    return response;
   }
 
   @Get('/status')
@@ -38,7 +42,9 @@ export class OrderController {
     type: StandartResponse<any>
   })
   async getOrderStatus(): Promise<StandartResponse<any>>{
-    return await firstValueFrom(this.orderService.send('get_order_status', {}));
+    const response =await firstValueFrom(this.orderService.send('get_order_status', {}));
+    if(response.error) throw new HttpException(response.error, 400);
+    return response;
   }
 
   @Get(':orderId')
@@ -50,7 +56,9 @@ export class OrderController {
     @Param('orderId') id: number
   ): Promise<StandartResponse<any>> 
   {
-    return await firstValueFrom(this.orderService.send('get_order', id));
+    const response = await firstValueFrom(this.orderService.send('get_order', id));
+    if(response.error) throw new HttpException(response.error, 400);
+    return response;
   }
 
   @Post()
@@ -60,11 +68,9 @@ export class OrderController {
   })
   async createOrder(): Promise<StandartResponse<any>> 
   {
-    const order:StandartResponse<any> = await firstValueFrom(this.orderService.send('create_order', {}));
-    if(!order.status){
-      throw new HttpException(order, 400)
-    }
-    return order
+    const response  = await firstValueFrom(this.orderService.send('create_order', {}));
+    if(response.error) throw new HttpException(response.error, 400);
+    return response;
   }
 
   @Put(':orderId')
@@ -80,7 +86,9 @@ export class OrderController {
     @Body() body: any
   ) : Promise<StandartResponse<any>> 
   {
-    return await firstValueFrom(this.orderService.send('update_order', {id, ...body}))
+    const response = await firstValueFrom(this.orderService.send('update_order', {id, ...body}))
+    if(response.error) throw new HttpException(response.error, 400);
+    return response;
   }
 
 }

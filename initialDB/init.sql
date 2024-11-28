@@ -26,6 +26,17 @@ insert into mistery_dish.storage (name, quantity) values ('cheese', 5);
 insert into mistery_dish.storage (name, quantity) values ('meat', 5);
 insert into mistery_dish.storage (name, quantity) values ('chicken', 5);
 
+-- create table shopping_logs
+
+create table mistery_dish.shopping_logs (
+  id serial primary key,
+  storage_id integer not null,
+  quantity integer not null,
+  created_at timestamp not null default now(),
+  constraint fk_storage_shopping_logs foreign key (storage_id) references mistery_dish.storage(id)
+);
+
+
 -- verificamos si existe la tabla dish
 
 create table mistery_dish.dish (

@@ -13,4 +13,10 @@ export class AppController {
     const randomDish = await this.appService.getRamdonDish();
     return randomDish;
   }
+
+  @EventPattern('get_all_dishes')
+  async getAllDishes(data): Promise<any> {
+    const dishes = await this.appService.getAllDishes(data);
+    return dishes;
+  }
 }

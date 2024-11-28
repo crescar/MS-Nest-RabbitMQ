@@ -6,6 +6,7 @@ import { DishIngredientsEntity } from './entities/dishIngredients.entity';
 import { OrderEntity } from './entities/order.entity';
 import { OrderStatusEntity } from './entities/orderStatus.entity';
 import { StorageEntity } from './entities/storage.entity';
+import { ShoppingLogEntity } from './entities/shoppingLog.entity';
 
 @Module({
   imports: [ConfigModule.forRoot(
@@ -27,7 +28,8 @@ import { StorageEntity } from './entities/storage.entity';
       DishIngredientsEntity,
       OrderEntity,
       OrderStatusEntity,
-      StorageEntity
+      StorageEntity,
+      ShoppingLogEntity
     ]
   })
 ],

@@ -99,12 +99,12 @@ export class OrderService {
         error: undefined
       }
     } catch (error) {
-      throw new HttpException({
+      return {
         status: 'error',
         message: 'Error to get order',
         data: undefined,
         error: error?.message ?? 'Error to get order'
-      }, 404);
+      }
     }
   }
 
@@ -124,21 +124,22 @@ export class OrderService {
       }
 
     } catch (error) {
-      throw new HttpException({
+      return {
         status: 'error',
         message: 'Error to update order',
         data: undefined,
         error: error?.message ?? 'Error to update order'
-      }, 404);
+      }
     }
-
-    
   }
 
   async listOrders(dataDto: any) {
     try {
       const totalItems = await this.orderRepository.count({
-        ...(dataDto.status ? {where: {statusId: dataDto.status}} : {})
+        where: {
+          ...(dataDto.status ? {statusId: dataDto.status} : {}),
+          ...(dataDto.search ? {dish: {name: dataDto.search}} : {})
+        }
       });
       const page = dataDto.page ?? 1
       const limit = dataDto.limit ?? 10
@@ -157,9 +158,15 @@ export class OrderService {
           dish: true,
           status: true
         },
+        order: {
+          id: 'ASC'
+        },
         take: limit,
         skip: (page - 1)* limit,
-        ...(dataDto.status ? {where: {statusId: dataDto.status}} : {})
+        where: {
+          ...(dataDto.status ? {statusId: dataDto.status} : {}),
+          ...(dataDto.search ? {dish: {name: dataDto.search}} : {})
+        }
       })
 
       return {
@@ -175,12 +182,12 @@ export class OrderService {
         error: undefined
       }
     } catch (error) {
-      throw new HttpException({
+      return {
         status: 'error',
         message: 'Error to get orders',
         data: undefined,
         error: error?.message ?? 'Error to get orders'
-      }, 404);
+      }
     }
     
   }
@@ -201,13 +208,12 @@ export class OrderService {
         error: undefined
       }
     } catch (error) {
-      console.log(error)
-      throw new HttpException({
+      return {
         status: 'error',
         message: 'Error to get orders',
         data: undefined,
         error: error?.message ?? 'Error to get orders'
-      }, 404);
+      }
     }
   }
 

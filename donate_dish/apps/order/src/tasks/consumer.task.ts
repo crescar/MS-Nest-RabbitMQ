@@ -27,6 +27,7 @@ export class TaskConsumerBullQueue extends WorkerHost {
     const getIngredientsToBuy = data.ingredients.filter((ingredient)=>ingredient.needToBuy)
     if(getIngredientsToBuy) {
       const updateStorage = []
+      const logStorage = []
       for (let index = 0; index < getIngredientsToBuy.length; index++) {
         const ingredient = getIngredientsToBuy[index];
         let buy = 0
@@ -37,9 +38,15 @@ export class TaskConsumerBullQueue extends WorkerHost {
           id: ingredient.ingredientId,
           quantity: buy + ingredient.quantityStorage
         }) 
+        logStorage.push({
+          storageId: ingredient.ingredientId,
+          quantity: buy
+        })
+        
         ingredient.quantityStorage += buy
       } 
       await firstValueFrom(this.storageService.emit('update_storage',updateStorage))
+      await firstValueFrom(this.storageService.emit('create_shopping_log',logStorage))
     }
     const dataUpdateStorage = data.ingredients.map((ingredient)=>{
       return {

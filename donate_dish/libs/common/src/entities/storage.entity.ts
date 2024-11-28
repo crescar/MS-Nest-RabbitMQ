@@ -1,4 +1,6 @@
-import { Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, Entity, JoinColumn} from 'typeorm';
+import { Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, Entity, JoinColumn, OneToMany} from 'typeorm';
+import { ShoppingLogEntity } from './shoppingLog.entity';
+
 @Entity({
     name: 'storage',
   })
@@ -21,5 +23,8 @@ import { Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, One
       name: 'updated_at',
     })
     updatedAt: Date;
+
+    @OneToMany(() => ShoppingLogEntity, (shoppingLog) => shoppingLog.storage)
+    shoppingLogs: ShoppingLogEntity[];
     
   }
