@@ -12,7 +12,7 @@ export class ShoppingLogEntity  {
     @Column({
         name: 'storage_id'
     })
-    storageId: string;
+    storageId: number;
   
     @Column()
     quantity: number;

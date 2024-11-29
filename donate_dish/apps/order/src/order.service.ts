@@ -6,9 +6,15 @@ import { Repository } from 'typeorm';
 import { OrderEntity, OrderStatusEntity } from '@app/common';
 import { TaskProducerBullQueue } from './tasks/producer.task';
 import { StandartResponse } from '@app/common/Dtos/standartResponse.dto';
-import { CreateOrderResponse } from './responses/createOrder.response';
+//import { CreateOrderResponse } from './responses/createOrder.response';
 import { microservicesDishConfiguration } from '@app/common/config/ms.config';
 import { KitchenDataDto } from '@app/common/Dtos/orders/kitchenData.dto';
+import { CreateOrderResponse } from '@app/common/Dtos/orders/CreateOrderResponse.dto';
+import { OrderResponse } from '@app/common/Dtos/orders/orderResponse.dto';
+import { StandarPaginatedData } from '@app/common/Dtos/StandarPaginateData.dto';
+import { OrderStatusResponse } from '@app/common/Dtos/orders/ordersStatusResponse.dto';
+import { PaginateParamsDto } from '@app/common/Dtos/PaginateParams.dto';
+import { UpdateOrderDto } from '@app/common/Dtos/orders/updateOrder.dto';
 
 @Injectable()
 export class OrderService {
@@ -22,8 +28,16 @@ export class OrderService {
     private readonly orderStatusRepository: Repository<OrderStatusEntity>
   ) {}
 
-  async createOrder(): Promise<StandartResponse<CreateOrderResponse | undefined>> {
-    const randomDish = await firstValueFrom(this.dishService.send('get_random_dish',{}));
+  async createOrder(): Promise<StandartResponse<CreateOrderResponse>> {
+    const randomDish: StandartResponse<any> = await firstValueFrom(this.dishService.send('get_random_dish',{}));
+    if(randomDish.error){
+      return {
+        status: 'error',
+        message: 'Error to get random dish',
+        data: undefined,
+        error: randomDish.error
+      }
+    }
     try {
       const order = new OrderEntity();
       order.dishId = randomDish.data.id;
@@ -32,7 +46,7 @@ export class OrderService {
       const dataToKitchen = this.mapperRecipiet(order.id,randomDish.data.id,randomDish.data.ingredients);
       await this.taskProducer.sendToKitchen(dataToKitchen);
       return {
-        status: true,
+        status: 'success',
         message: 'Order created',
         data: {
           orderId: order.id,
@@ -44,7 +58,7 @@ export class OrderService {
       }
     } catch (error) {
       return {
-        status: false,
+        status: 'error',
         message: 'Error to create Order',
         data: undefined,
         error: error?.message ?? 'Error to create Order'
@@ -69,7 +83,7 @@ export class OrderService {
     }
   }
 
-  async getOrder(id: number) {
+  async getOrder(id: number) : Promise<StandartResponse<OrderResponse>> {
     try {
       return {
         status: 'success',
@@ -108,21 +122,17 @@ export class OrderService {
     }
   }
 
-  async updateOrder(dataDto: any) {
-    
+  async updateOrder(dataDto: UpdateOrderDto): Promise<StandartResponse<undefined>>  {
     try {
-
       await this.orderRepository.update(dataDto.id,{
         statusId: dataDto.statusId
       })
-
       return {
         status: 'success',
         message: 'Order updated',
         data: undefined,
         error: undefined
       }
-
     } catch (error) {
       return {
         status: 'error',
@@ -133,7 +143,7 @@ export class OrderService {
     }
   }
 
-  async listOrders(dataDto: any) {
+  async listOrders(dataDto: PaginateParamsDto): Promise<StandartResponse<StandarPaginatedData<OrderResponse[]>>> {
     try {
       const totalItems = await this.orderRepository.count({
         where: {
@@ -192,7 +202,7 @@ export class OrderService {
     
   }
 
-  async getOrderStatus() {
+  async getOrderStatus(): Promise<StandartResponse<OrderStatusResponse[]>>  {
     try {
       return {
         status: 'success',

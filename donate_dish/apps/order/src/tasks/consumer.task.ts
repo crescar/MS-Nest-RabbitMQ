@@ -7,6 +7,7 @@ import { firstValueFrom } from 'rxjs';
 import { OrderService } from '../order.service';
 import { microservicesStorageConfiguration } from '@app/common/config/ms.config';
 import { KitchenDataDto } from '@app/common/Dtos/orders/kitchenData.dto';
+import { CreateStorageLogDto, UpdateStorageDto } from '@app/common/Dtos/orders/updateStorage.dto';
 
 
 @Processor('kitchent-queue')
@@ -26,8 +27,8 @@ export class TaskConsumerBullQueue extends WorkerHost {
   async processToKitchen(data: KitchenDataDto) {
     const getIngredientsToBuy = data.ingredients.filter((ingredient)=>ingredient.needToBuy)
     if(getIngredientsToBuy) {
-      const updateStorage = []
-      const logStorage = []
+      const updateStorage: UpdateStorageDto[] = []
+      const logStorage: CreateStorageLogDto[] = []
       for (let index = 0; index < getIngredientsToBuy.length; index++) {
         const ingredient = getIngredientsToBuy[index];
         let buy = 0
@@ -42,7 +43,6 @@ export class TaskConsumerBullQueue extends WorkerHost {
           storageId: ingredient.ingredientId,
           quantity: buy
         })
-        
         ingredient.quantityStorage += buy
       } 
       await firstValueFrom(this.storageService.emit('update_storage',updateStorage))
@@ -59,9 +59,16 @@ export class TaskConsumerBullQueue extends WorkerHost {
       id: data.orderId,
       statusId: 2
     })
+
+    setTimeout(()=>{
+      this.orderService.updateOrder({
+        id: data.orderId,
+        statusId: 3
+      })
+    }, 180000)
   }
   
-  async buyIngredients(name:string) {
+  async buyIngredients(name:string): Promise<number> {
     try {
       const {data} = await axios.get(`${process.env.GROCERY_STORE_API}?ingredient=${name}`)
       return data.quantitySold 

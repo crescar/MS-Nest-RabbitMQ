@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger"
 
 export class StandartResponse<T> {
     @ApiProperty()
-    status:boolean
+    status:string 
     @ApiProperty()
     message:string
     @ApiProperty()

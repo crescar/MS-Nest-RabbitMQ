@@ -2,6 +2,10 @@ import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { DishEntity } from '../../../libs/common/src/entities/dish.entity';
+import { PaginateParamsDto } from '@app/common/Dtos/PaginateParams.dto';
+import { StandartResponse } from '@app/common/Dtos/standartResponse.dto';
+import { StandarPaginatedData } from '@app/common/Dtos/StandarPaginateData.dto';
+import { DishResponse } from '@app/common/Dtos/Dish/DishResponse.dto';
 
 
 
@@ -11,7 +15,7 @@ export class AppService {
     @InjectRepository(DishEntity)
     private readonly dishRepository: Repository<DishEntity>,
   ) {}
-  async getRamdonDish(): Promise<any> {
+  async getRamdonDish(): Promise<StandartResponse<any>> {
     try {
       const countDishes = await this.dishRepository.count();
       const randomDish = Math.ceil(Math.random() * countDishes);
@@ -43,7 +47,7 @@ export class AppService {
     }
   }
 
-  async getAllDishes(dataDto): Promise<any> {
+  async getAllDishes(dataDto: PaginateParamsDto): Promise<StandartResponse<StandarPaginatedData<DishResponse[]>>>  {
     try {
       const totalItems = await this.dishRepository.count({
         where: {

@@ -1,7 +1,11 @@
-import { UpdateStorageDto } from '@app/common/Dtos/orders/updateStorage.dto';
+import { CreateStorageLogDto, UpdateStorageDto } from '@app/common/Dtos/orders/updateStorage.dto';
+import { PaginateParamsDto } from '@app/common/Dtos/PaginateParams.dto';
+import { StandarPaginatedData } from '@app/common/Dtos/StandarPaginateData.dto';
+import { StandartResponse } from '@app/common/Dtos/standartResponse.dto';
+import { StorageLogResponse, StorageResponse } from '@app/common/Dtos/storage/storageResponse.dto';
 import { ShoppingLogEntity } from '@app/common/entities/shoppingLog.entity';
 import { StorageEntity } from '@app/common/entities/storage.entity';
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 
@@ -15,7 +19,7 @@ export class StorageService {
     private readonly ShoppingLogRepository: Repository<ShoppingLogEntity>
   ) {}
 
-  async getStorage(dataDto:any){
+  async getStorage(dataDto:PaginateParamsDto):Promise<StandartResponse<StandarPaginatedData<StorageResponse[]>>>{
     try {
       const totalItems = await this.StorageRepository.count({
         where: {
@@ -65,7 +69,7 @@ export class StorageService {
     }
   }
 
-  async updateStorage(ingredients: UpdateStorageDto[]) {
+  async updateStorage(ingredients: UpdateStorageDto[]): Promise<StandartResponse<undefined>> {
     try {
       for (let index = 0; index < ingredients.length; index++) {
         const ingredient = ingredients[index];
@@ -90,7 +94,7 @@ export class StorageService {
 
   }
 
-  async createShoopingLog(logs: any[]){
+  async createShoopingLog(logs: CreateStorageLogDto[]): Promise<StandartResponse<undefined>>{
     try {
       
       await this.ShoppingLogRepository.save(logs)
@@ -111,7 +115,7 @@ export class StorageService {
     }
   }
 
-  async getShoppingLogs(dataDto: any){
+  async getShoppingLogs(dataDto: PaginateParamsDto):Promise<StandartResponse<StandarPaginatedData<StorageLogResponse[]>>>{
     try {
 
       const totalItems = await this.ShoppingLogRepository.count()
