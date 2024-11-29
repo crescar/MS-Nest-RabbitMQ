@@ -8,12 +8,12 @@ import { TaskProducerBullQueue } from './tasks/producer.task';
 import { StandartResponse } from '@app/common/Dtos/standartResponse.dto';
 import { microservicesDishConfiguration } from '@app/common/config/ms.config';
 import { KitchenDataDto } from '@app/common/Dtos/orders/kitchenData.dto';
-import { CreateOrderResponse } from '@app/common/Dtos/orders/CreateOrderResponse.dto';
 import { OrderResponse } from '@app/common/Dtos/orders/orderResponse.dto';
 import { StandarPaginatedData } from '@app/common/Dtos/StandarPaginateData.dto';
 import { OrderStatusResponse } from '@app/common/Dtos/orders/ordersStatusResponse.dto';
 import { PaginateParamsDto } from '@app/common/Dtos/PaginateParams.dto';
 import { UpdateOrderDto } from '@app/common/Dtos/orders/updateOrder.dto';
+import { CreateOrderResponse } from '../../../libs/common/src/Dtos/orders/createOrderResponse.dto';
 
 @Injectable()
 export class OrderService {

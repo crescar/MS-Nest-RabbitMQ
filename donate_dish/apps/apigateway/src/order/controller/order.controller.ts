@@ -1,5 +1,4 @@
 import { microservicesOrderConfiguration } from '@app/common/config/ms.config';
-import { CreateOrderResponse } from '@app/common/Dtos/orders/CreateOrderResponse.dto';
 import { OrderResponse } from '@app/common/Dtos/orders/orderResponse.dto';
 import { OrderStatusResponse } from '@app/common/Dtos/orders/ordersStatusResponse.dto';
 import { UpdateOrderDto } from '@app/common/Dtos/orders/updateOrder.dto';
@@ -9,8 +8,8 @@ import { StandartResponse } from '@app/common/Dtos/standartResponse.dto';
 import { Controller, Inject, Post, Get, Put, Query, Param, Body, HttpException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
-
 import { firstValueFrom } from 'rxjs';
+import { CreateOrderResponse } from '../../../../../libs/common/src/Dtos/orders/createOrderResponse.dto';
 
 
 @Controller('order')
