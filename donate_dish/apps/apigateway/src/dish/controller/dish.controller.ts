@@ -1,7 +1,7 @@
 import { microservicesDishConfiguration } from '@app/common/config/ms.config';
 import { Controller, Inject, Get,Query, HttpException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import { ApiResponse, ApiParam } from '@nestjs/swagger';
 import { firstValueFrom } from 'rxjs';
 import { StandartResponse } from '@app/common/Dtos/standartResponse.dto';
 import { DishResponse } from '@app/common/Dtos/Dish/DishResponse.dto';
@@ -27,7 +27,7 @@ export class DishController {
         @Query('page') page: number,
         @Query('limit') limit: number,
         @Query('search') search: string
-    ): Promise<StandartResponse<any>> 
+    ): Promise<StandartResponse<StandarPaginatedData<DishResponse[]>>> 
     {
         const response = await firstValueFrom(this.dishService.send('get_all_dishes', {page, limit, search} as PaginateParamsDto));
         if(response.error) throw new HttpException(response, 400);

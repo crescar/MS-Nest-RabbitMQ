@@ -26,7 +26,7 @@ export class StorageController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('search') search: string
-  ): Promise<StandartResponse<StandarPaginatedData<StorageResponse>>> 
+  ): Promise<StandartResponse<StandarPaginatedData<StorageResponse[]>>> 
   {
     const response = await firstValueFrom(this.storageService.send('get_storage', {page, limit, search}));
     if(response.error) throw new HttpException(response, 400);

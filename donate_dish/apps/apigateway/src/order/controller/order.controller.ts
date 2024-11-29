@@ -33,7 +33,7 @@ export class OrderController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('status') status: number,
-    @Query('search') search: number
+    @Query('search') search: string
   ): Promise<StandartResponse<StandarPaginatedData<OrderResponse[]>>> 
   {
     const response = await firstValueFrom(this.orderService.send('list_orders', {page, limit, status, search} as PaginateParamsDto));
@@ -46,7 +46,7 @@ export class OrderController {
     status: 200,
     type: StandartResponse<OrderStatusResponse[]>
   })
-  async getOrderStatus(): Promise<StandartResponse<OrderStatusResponse>>{
+  async getOrderStatus(): Promise<StandartResponse<OrderStatusResponse[]>>{
     const response =await firstValueFrom(this.orderService.send('get_order_status', {}));
     if(response.error) throw new HttpException(response, 400);
     return response;
