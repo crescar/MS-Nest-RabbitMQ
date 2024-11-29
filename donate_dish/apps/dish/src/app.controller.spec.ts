@@ -2,12 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DishEntity } from '@app/common';
-import { Repository, Like } from 'typeorm';
 import { PaginateParamsDto } from '@app/common/Dtos/PaginateParams.dto';
 import { StandartResponse } from '@app/common/Dtos/standartResponse.dto';
 import { StandarPaginatedData } from '@app/common/Dtos/StandarPaginateData.dto';
 import { DishResponse } from '@app/common/Dtos/Dish/DishResponse.dto';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('AppController', () => {
   let appController: AppController;

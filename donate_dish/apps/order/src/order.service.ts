@@ -6,7 +6,6 @@ import { Repository } from 'typeorm';
 import { OrderEntity, OrderStatusEntity } from '@app/common';
 import { TaskProducerBullQueue } from './tasks/producer.task';
 import { StandartResponse } from '@app/common/Dtos/standartResponse.dto';
-//import { CreateOrderResponse } from './responses/createOrder.response';
 import { microservicesDishConfiguration } from '@app/common/config/ms.config';
 import { KitchenDataDto } from '@app/common/Dtos/orders/kitchenData.dto';
 import { CreateOrderResponse } from '@app/common/Dtos/orders/CreateOrderResponse.dto';
