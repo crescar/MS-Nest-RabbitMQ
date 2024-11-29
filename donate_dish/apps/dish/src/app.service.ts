@@ -105,7 +105,7 @@ export class AppService {
 
       return {
         status: 'success',
-        message: 'Shopping Logs',
+        message: 'Get All Dishes',
         data: {
           items,
           page,

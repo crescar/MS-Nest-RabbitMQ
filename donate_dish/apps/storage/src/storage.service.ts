@@ -48,7 +48,7 @@ export class StorageService {
 
       return {
         status: 'success',
-        message: 'Shopping Logs',
+        message: 'Get All Storage',
         data: {
           items,
           page,
