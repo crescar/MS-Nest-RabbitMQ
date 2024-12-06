@@ -147,7 +147,7 @@ export class OrderService {
       const totalItems = await this.orderRepository.count({
         where: {
           ...(dataDto.status ? {statusId: dataDto.status} : {}),
-          ...(dataDto.search ? {dish: {name: dataDto.search}} : {})
+          ...(dataDto.search ? {id:dataDto.search} : {})
         }
       });
       const page = dataDto.page ?? 1
@@ -174,7 +174,7 @@ export class OrderService {
         skip: (page - 1)* limit,
         where: {
           ...(dataDto.status ? {statusId: dataDto.status} : {}),
-          ...(dataDto.search ? {dish: {name: dataDto.search}} : {})
+          ...(dataDto.search ? {id: dataDto.search} : {})
         }
       })
 

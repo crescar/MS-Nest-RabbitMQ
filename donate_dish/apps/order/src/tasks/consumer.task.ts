@@ -65,7 +65,7 @@ export class TaskConsumerBullQueue extends WorkerHost {
         id: data.orderId,
         statusId: 3
       })
-    }, 180000)
+    }, 30000)
   }
   
   async buyIngredients(name:string): Promise<number> {
